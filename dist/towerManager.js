@@ -9,7 +9,7 @@ var tower = {
                     filter: (creep) => creep.hits < creep.hitsMax
                 })
                 if(closestDamagedCreep) {
-                    tower.repair(closestDamagedCreep)
+                    tower.heal(closestDamagedCreep)
                 } else {
                     var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
                     filter: (structure) => structure.hits < structure.hitsMax * 0.95 &&
