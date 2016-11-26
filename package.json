@@ -1,0 +1,15 @@
+{
+  "name": "screeps",
+  "version": "1.0.0",
+  "description": "My screeps AI",
+  "main": "creep.types.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sam Martin <Nivekkas@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^3.10.2",
+    "eslint-config-google": "^0.7.0"
+  }
+}
