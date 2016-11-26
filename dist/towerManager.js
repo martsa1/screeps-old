@@ -1,13 +1,13 @@
 var tower = {
     run: function(tower) {
         if(tower) {
-            var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS)
             if(closestHostile) {
                 tower.attack(closestHostile)
             } else {
                 var closestDamagedCreep = tower.pos.findClosestByRange(FIND_CREEPS, {
                     filter: (creep) => creep.hits < creep.hitsMax
-                });
+                })
                 if(closestDamagedCreep) {
                     tower.repair(closestDamagedCreep)
                 } else {

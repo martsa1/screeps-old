@@ -10,7 +10,7 @@ if (!Memory.population) {
 
 function extractor(creep) {
     // creep.say(creep.memory.transferring === true ? 'Transferring' : 'Harvesting')
-            utils.harvest_nearest_energy(creep)
+    utils.harvest_nearest_energy(creep)
 }
 
-module.exports = extractor;
+module.exports = extractor

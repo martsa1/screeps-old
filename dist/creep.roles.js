@@ -29,6 +29,6 @@ var roles = {
     regenerate: require('creep.role.regenerate'),
     recycle: require('creep.role.recycle'),
     upgrade: require('creep.role.recycle')
-};
+}
 
-module.exports = roles;
+module.exports = roles

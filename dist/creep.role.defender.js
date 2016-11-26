@@ -14,7 +14,7 @@ function defender(creep) {
     if(target) {
         console.log ('Found an Invader!')
         if(creep.rangedAttack(target) == ERR_NOT_IN_RANGE) {
-            creep.moveTo(target);
+            creep.moveTo(target)
         }
     }
     else {
@@ -22,4 +22,4 @@ function defender(creep) {
     }
 }
 
-module.exports = defender;
+module.exports = defender

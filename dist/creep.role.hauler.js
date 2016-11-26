@@ -10,10 +10,10 @@ if (!Memory.population) {
 
 function hauler(creep) {
     if(creep.memory.state && creep.carry.energy == 0) {
-        creep.memory.state = false;
+        creep.memory.state = false
     }
     if(!creep.memory.state && creep.carry.energy == creep.carryCapacity) {
-        creep.memory.state = true;
+        creep.memory.state = true
     }
 
     if (!creep.memory.state) {
@@ -31,24 +31,24 @@ function hauler(creep) {
     if (creep.memory.state){
         var target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
             filter: (structure) => {
-                return (structure.structureType == STRUCTURE_TOWER) && structure.energy < structure.energyCapacity;
+                return (structure.structureType == STRUCTURE_TOWER) && structure.energy < structure.energyCapacity
             }
-        });
+        })
         if(target) {
             if(creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(target);
+                creep.moveTo(target)
             }
         }
         else {
             var target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.structureType == STRUCTURE_EXTENSION ||
-                            structure.structureType == STRUCTURE_SPAWN) && structure.energy < structure.energyCapacity;
+                            structure.structureType == STRUCTURE_SPAWN) && structure.energy < structure.energyCapacity
                 }
-            });
+            })
             if(target) {
                 if(creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target);
+                    creep.moveTo(target)
                 }
             }
             else {
@@ -77,7 +77,7 @@ function get_full_extractor(creep) {
             extractor.memory.role == 'harvester' &&
             extractor.carry[RESOURCE_ENERGY] > 0
         }
-    });
+    })
     var fullest = _.max(source)
     if (fullest == '-Infinity') {
         return
@@ -87,4 +87,4 @@ function get_full_extractor(creep) {
     }
 }
 
-module.exports = hauler;
+module.exports = hauler

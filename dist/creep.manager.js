@@ -39,8 +39,8 @@ var manager = {
 function undertaker() {
     for(var name in Memory.creeps) {
             if(!Game.creeps[name]) {
-                delete Memory.creeps[name];
-                console.log('Today we mourn the passing of', name);
+                delete Memory.creeps[name]
+                console.log('Today we mourn the passing of', name)
             }
             var creep = Game.creeps[name]
             if (creep) {

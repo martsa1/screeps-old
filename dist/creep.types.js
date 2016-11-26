@@ -28,4 +28,4 @@ var unit_types = {
     }
 }
 
-module.exports = unit_types;
+module.exports = unit_types

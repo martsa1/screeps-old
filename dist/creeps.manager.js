@@ -9,11 +9,11 @@ var unit_type = require('creep.types')
 
 
 // Default population split
-var numBuilders = 5;
-var numHarvesters = 2;
-var numUpgraders = 2;
+var numBuilders = 5
+var numHarvesters = 2
+var numUpgraders = 2
 
-var numDefenders = 0;
+var numDefenders = 0
 
 if (!Memory.population){
     Memory.population = {
@@ -46,8 +46,8 @@ var manager = {
 function undertaker() {
     for(var name in Memory.creeps) {
             if(!Game.creeps[name]) {
-                delete Memory.creeps[name];
-                console.log('Today we mourn the passing of', name);
+                delete Memory.creeps[name]
+                console.log('Today we mourn the passing of', name)
             }
         }
 }
@@ -101,7 +101,7 @@ function spawn_units() {
     // }
     // if(population.length > numDefenders) {
     //     console.log('Too many Defenders: ' + population.length)
-    //     population[0].suicide();
+    //     population[0].suicide()
     // }
 }
 

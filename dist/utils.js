@@ -3,31 +3,31 @@ var utils = {
     equals: function (array1, array2) {
         // if the arrays are a falsy value, return
         if (!array1 || !array2)
-            return false;
+            return false
 
         // compare lengths - can save a lot of time
         if (array1.length != array2.length)
-            return false;
+            return false
 
         for (var i = 0, l=array1.length; i < l; i++) {
             // Check if we have nested arrays
             if (array1[i] instanceof Array && array2[i] instanceof Array) {
                 // recurse into the nested arrays
                 if (!array1[i].equals(array2[i]))
-                    return false;
+                    return false
             }
             else if (array1[i] != array2[i]) {
                 // Warning - two different object instances will never be equal: {x:20} != {x:20}
-                return false;
+                return false
             }
         }
-        return true;
+        return true
     },
 
     harvest_nearest_energy: function (creep) {
-        var source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE);
+        var source = creep.pos.findClosestByPath(FIND_SOURCES_ACTIVE)
                 if(creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(source);
+                    creep.moveTo(source)
                 }
     },
 
@@ -62,7 +62,7 @@ var utils = {
         if (source) {
             try {
                 if(creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(source);
+                    creep.moveTo(source)
                 }
             } catch (err) {
                 console.log('Something Died:', err)

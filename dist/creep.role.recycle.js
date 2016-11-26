@@ -9,10 +9,10 @@ function regenerate(creep) {
         utils.go_relax(creep)
     }
     if (creep.memory.state == 0) {
-        var spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS);
+        var spawn = creep.pos.findClosestByRange(FIND_MY_SPAWNS)
         if(spawn) {
             if(spawn.recycleCreep(creep) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(spawn);
+                creep.moveTo(spawn)
             }
         } else {
             utils.go_relax(creep)
@@ -20,4 +20,4 @@ function regenerate(creep) {
     }
 }
 
-module.exports = regenerate;
+module.exports = regenerate
