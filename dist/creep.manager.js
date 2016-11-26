@@ -81,32 +81,32 @@ function spawn_units(current_room) {
             if (_.filter(Game.creeps, (creep) => creep.memory.role == Memory.socialStructure[0]) < Memory.population[Memory.socialStructure[0]]) {
                 // We shouldn't really get here, but in case all our units are dead or something...
                 console.log('Spawning lvl1 Worker')
-                var newby = utils.get_spawn().createCreep(unit_type.worker_1.u_body, unit_type.worker_1.u_name, unit_type.worker_1.u_mem)
+                var newby = utils.get_spawn().createCreep(unit_type.worker_1.u_body, undefined, unit_type.worker_1.u_mem)
                 return
             }
             console.log('Spawning lvl3 Worker')
-            var newby = utils.get_spawn().createCreep(unit_type.worker_3.u_body, unit_type.worker_3.u_name, unit_type.worker_3.u_mem)
+            var newby = utils.get_spawn().createCreep(unit_type.worker_3.u_body,undefined, unit_type.worker_3.u_mem)
             console.log(newby)
         }
         else if (max_build_energy >= unit_type.worker_2.u_cost) {
             if (_.filter(Game.creeps, (creep) => creep.memory.role == Memory.socialStructure[0]) < Memory.population[Memory.socialStructure[0]]) {
                 // We shouldn't really get here, but in case all our units are dead or something...
                 console.log('Spawning lvl1 Worker')
-                var newby = utils.get_spawn().createCreep(unit_type.worker_1.u_body, unit_type.worker_1.u_name, unit_type.worker_1.u_mem)
+                var newby = utils.get_spawn().createCreep(unit_type.worker_1.u_body,undefined, unit_type.worker_1.u_mem)
                 return
             }
             console.log('Spawning lvl2 Worker')
-            var newby = utils.get_spawn().createCreep(unit_type.worker_2.u_body, unit_type.worker_2.u_name, unit_type.worker_2.u_mem)
+            var newby = utils.get_spawn().createCreep(unit_type.worker_2.u_body,undefined, unit_type.worker_2.u_mem)
         }
         else if (max_build_energy >= unit_type.worker_1.u_cost) {
             console.log('Spawning lvl1 Worker')
-            var newby = utils.get_spawn().createCreep(unit_type.worker_1.u_body, unit_type.worker_1.u_name, unit_type.worker_1.u_mem)
+            var newby = utils.get_spawn().createCreep(unit_type.worker_1.u_body,undefined, unit_type.worker_1.u_mem)
         }
     }
 
     if (population_fighters.length < needed_fighters) {
         // We have a deficit of fighters, lets spawn some more!
-        var newby = utils.get_spawn().createCreep(unit_type.defender_1.u_body, unit_type.defender_1.u_name, unit_type.defender_1.u_mem)
+        var newby = utils.get_spawn().createCreep(unit_type.defender_1.u_body,undefined, unit_type.defender_1.u_mem)
     }
 
     //Lets try to ID these things that don't have unit_type definitions
