@@ -1,0 +1,3 @@
+[submodule "autocomplete"]
+	path = screepsAutocomplete
+	url = git@github.com:Garethp/ScreepsAutocomplete.git
