@@ -1,1 +1,7 @@
+---
  extends: screeps-neat-o
+ rules:
+   max-len:
+    - warn
+    - code: 80
+      tabWidth: 2
