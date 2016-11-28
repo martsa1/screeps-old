@@ -1,7 +1,19 @@
----
- extends: screeps-neat-o
- rules:
-   max-len:
+env:
+  node: true
+  es6: true
+extends:
+  - 'eslint:recommended'
+  - 'screeps-neat-o'
+parserOptions:
+  sourceType: module
+globals:
+  '_': false
+rules:
+  no-console: 0
+  indent:
+    - warn
+    - 2
+  max-len:
     - warn
     - code: 80
-      tabWidth: 2
+    - tabWidth: 2
