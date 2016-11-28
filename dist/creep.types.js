@@ -45,6 +45,29 @@ var unit_types = {
     u_cost: (100*3)+(50*3)+(50*6)
   },
 
+  worker_4: {
+    u_body: [
+      WORK,
+      WORK,
+      WORK,
+      WORK,
+      CARRY,
+      CARRY,
+      CARRY,
+      CARRY,
+      MOVE,
+      MOVE,
+      MOVE,
+      MOVE,
+      MOVE,
+      MOVE,
+      MOVE,
+      MOVE
+    ],
+    u_mem:{'unit_type': 'worker', 'lvl': '3'},
+    u_cost: (100*4)+(50*4)+(50*8)
+  },
+
   defender_1: {
     u_body: [
       TOUGH,
