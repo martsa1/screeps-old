@@ -1,10 +1,10 @@
 var priority = [
   'harvester',
+  'hauler',
   'builder',
   'upgrader',
   'defender',
-  'extractor',
-  'hauler'
+  'extractor'
 ]
 
 if (!Memory.socialStructure) {
