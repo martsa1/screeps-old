@@ -1,5 +1,6 @@
 var priority = [
   'harvester',
+  'distributor',
   'hauler',
   'builder',
   'upgrader',
@@ -15,17 +16,20 @@ if (!Memory.socialStructure) {
 
 var roles = {
 
-    // Worker roles
+  // Worker roles
   harvester: require('creep.role.harvester'),
-  hauler: require('creep.role.hauler'),
   extractor: require('creep.role.extractor'),
   upgrader: require('creep.role.upgrader'),
   builder: require('creep.role.builder'),
 
-    // Fighter roles
+  // Carrier Roles
+  hauler: require('creep.role.hauler'),
+  distributor: require('creep.role.distributor'),
+
+  // Fighter roles
   defender: require('creep.role.defender'),
 
-    // Misc
+  // Misc
   regenerate: require('creep.role.regenerate'),
   recycle: require('creep.role.recycle'),
   upgrade: require('creep.role.recycle')
