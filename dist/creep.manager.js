@@ -70,6 +70,13 @@ function spawn_units(current_room) {
       && creep.memory.role != 'upgrade'
     )
   )
+
+  var population_regenerates = _.filter(
+    Game.creeps, (creep) => (
+      creep.memory.role == 'regenerate'
+    )
+  )
+
   var population_fighters = _.filter(Game.creeps, (creep) =>
     creep.memory.unit_type == 'defender'
   )
@@ -85,18 +92,18 @@ function spawn_units(current_room) {
   //             population_fighters.length)
   // console.log('Unknown Pop:', population_unknown.length)
 
-  if (population_workers.length < needed_workers) {
+  if (population_workers.length < needed_workers
+    && population_regenerates.length == 0) {
       // We have a deficit of workers, lets spawn some more!
     if (max_build_energy >= unit_type.worker_3.u_cost) {
       if (_.filter(
-            Game.creeps, (creep) => (
-              creep.memory.role == Memory.socialStructure[0]) <
-              Memory.population[Memory.socialStructure[0]]
-            )
-          ) {
-            // We shouldn't really get here, but in case all our units are
-            // dead or something...
-        console.log('Spawning lvl1 Worker')
+        Game.creeps, (creep) => (
+          creep.memory.role == Memory.socialStructure[0])
+        ).length  < Memory.population[Memory.socialStructure[0]]
+      ) {
+        // We shouldn't really get here, but in case all our units are
+        // dead or something...
+        console.log('Emergency Spawning lvl1 Worker')
         var newby = utils.get_spawn().createCreep(
               unit_type.worker_1.u_body,
               undefined,
@@ -113,13 +120,12 @@ function spawn_units(current_room) {
     else if (max_build_energy >= unit_type.worker_2.u_cost) {
       if (_.filter(
             Game.creeps, (creep) => (
-              creep.memory.role == Memory.socialStructure[0]) <
-              Memory.population[Memory.socialStructure[0]]
-            )
+              creep.memory.role == Memory.socialStructure[0])
+            ).length < Memory.population[Memory.socialStructure[0]]
           ) {
             // We shouldn't really get here, but in case all our units are
             // dead or something...
-        console.log('Spawning lvl1 Worker')
+        console.log('Emergency Spawning lvl1 Worker')
         newby = utils.get_spawn().createCreep(
               unit_type.worker_1.u_body,
               undefined,
@@ -165,12 +171,16 @@ function spawn_units(current_room) {
     }
   }
 
-  var min_lvl_workers = _.filter(
-    Game.creeps, (creep) => creep.memory.role == Memory.socialStructure[0])
-  if (min_lvl_workers.length ==
-    Memory.population[Memory.socialStructure[0]]) {
+  var most_important_workers = _.filter(
+    Game.creeps, (creep) => creep.memory.role == Memory.socialStructure[0]
+      || creep.memory.role == Memory.socialStructure[1])
+  if (most_important_workers.length >=
+    Memory.population[Memory.socialStructure[0]]
+    + Memory.population[Memory.socialStructure[1]]
+    && _.filter(Game.creeps,
+      (creep) => creep.memory.role == 'upgrade').length < 1) {
     var worst_creep = _.min(
-        min_lvl_workers,
+        most_important_workers,
         function(worker) {
           return worker.memory.lvl
         })
