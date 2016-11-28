@@ -66,7 +66,7 @@ var utils = {
         }
       }
     }
-    return 0
+    return false
   },
 
   collect_nearest_energy: function (creep) {
@@ -97,6 +97,23 @@ var utils = {
     for (var i in Game.flags) {
       return Game.flags[i]
     }
+  },
+
+  get_full_extractor: function(creep) {
+    // var source = creep.pos.findClosestByRange(FIND_MY_CREEPS, {
+    //   filter: (extractor) => {
+    //     extractor.memory.role == 'harvester' &&
+    //           extractor.carry[RESOURCE_ENERGY] > 0
+    //   }
+    // })
+    // var fullest = _.max(source)
+    // if (fullest == '-Infinity') {
+    //   return
+    // } else {
+    //   console.log('Returning Fullest creep!')
+    //   return fullest
+    // }
+    return false
   }
 }
 
