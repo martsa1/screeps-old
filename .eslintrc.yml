@@ -17,3 +17,6 @@ rules:
     - warn
     - code: 80
     - tabWidth: 2
+  complexity:
+    - error
+    - 10
