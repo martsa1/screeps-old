@@ -1,13 +1,5 @@
 var utils = require('utils')
 
-if (!Memory.population) {
-  Memory.population = {
-    builder: 2,
-  }
-} else if (!Memory.population.builder) {
-  Memory.population['builder'] = 2
-}
-
 function builder(creep) {
   if(creep.memory.state && creep.carry.energy == 0) {
     creep.memory.state = false

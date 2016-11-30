@@ -1,18 +1,32 @@
 var priority = [
-  'harvester',
   'distributor',
   'hauler',
   'builder',
   'upgrader',
   'defender',
-  'extractor'
+  'harvester'
 ]
 
 if (!Memory.socialStructure) {
-  Memory['socialStructure'] = priority
-} else {
-  Memory.socialStructure = priority
+  Memory['socialStructure']['workers'] = priority
+} else if (!Memory.socialStructure.workers){
+  Memory.socialStructure['workers'] = priority
 }
+
+if (!Memory.population) {
+  Memory['population'] = {
+    extractor: 2,
+    builder: 2,
+    defender: 0,
+    distributor: 2,
+    harvester: 0,
+    hauler: 0,
+    upgrader: 2,
+  }
+} else if (!Memory.population.harvester) {
+  Memory.population['harvester'] = 2
+}
+
 
 var roles = {
 

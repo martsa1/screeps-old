@@ -1,13 +1,5 @@
 var utils = require('utils')
 
-if (!Memory.population) {
-  Memory.population = {
-    upgrader: 2,
-  }
-} else if (!Memory.population.upgrader) {
-  Memory.population.upgrader = 2
-}
-
 function upgrader(creep) {
 
   if(creep.memory.upgrading && creep.carry.energy == 0) {

@@ -1,13 +1,5 @@
 var utils = require('utils')
 
-if (!Memory.population) {
-  Memory.population = {
-    distributor: 2,
-  }
-} else if (!Memory.population.hauler) {
-  Memory.population.distributor = 2
-}
-
 function distributor(creep) {
   if(creep.memory.state && creep.carry.energy == 0) {
     creep.memory.state = false

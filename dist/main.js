@@ -9,8 +9,6 @@ module.exports.loop = function () {
     var current_room = Game.rooms[room]
     creepManager.manage(current_room)
     towerManager.manage(current_room)
+    creepManager.run(current_room)
   }
-
-    // Run creeps globally
-  creepManager.run()
 }

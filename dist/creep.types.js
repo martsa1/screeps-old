@@ -136,6 +136,65 @@ var unit_types = {
     u_cost: (50*8)+(50*8)
   },
 
+  miner_1:  {
+    u_body: [
+      WORK,
+      WORK,
+      MOVE
+    ],
+    u_mem: {'unit_type': 'miner', 'lvl': '1'},
+    u_cost: (100*2)+50
+  },
+
+  miner_2: {
+    u_body: [
+      WORK,
+      WORK,
+      WORK,
+      WORK,
+      WORK,
+      MOVE,
+      MOVE
+    ],
+    u_mem:{'unit_type': 'miner', 'lvl': '2'},
+    u_cost: (100*5)+(50*2)
+  },
+
+  miner_3: {
+    u_body: [
+      WORK,
+      WORK,
+      WORK,
+      WORK,
+      WORK,
+      WORK,
+      WORK,
+      MOVE,
+      MOVE
+    ],
+    u_mem:{'unit_type': 'miner', 'lvl': '3'},
+    u_cost: (100*7)+(50*2)
+  },
+
+  miner_4: {
+    u_body: [
+      WORK,
+      WORK,
+      WORK,
+      WORK,
+      WORK,
+      WORK,
+      WORK,
+      WORK,
+      MOVE,
+      MOVE,
+      MOVE,
+      MOVE
+    ],
+    u_mem:{'unit_type': 'miner', 'lvl': '4'},
+    u_cost: (100*8)+(50*4)
+  },
+
   defender_1: {
     u_body: [
       TOUGH,
