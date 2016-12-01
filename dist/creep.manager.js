@@ -61,8 +61,7 @@ function spawn_units(current_room) {
 
   var needed_workers = Memory.population.builder
       + Memory.population.harvester
-      + Memory.population.upgrader
-      + Memory.population.hauler || 0
+      + Memory.population.upgrader || 0
   var needed_carriers = Memory.population.hauler
       + Memory.population.distributor || 0
   var needed_miners = current_room.find(FIND_SOURCES).length
@@ -387,7 +386,7 @@ function minersUnion(room) {
 }
 
 function carriersUnion(room) {
-  var needed_carriers = room.find(FIND_MY_CREEPS, {
+  var needed_haulers = room.find(FIND_MY_CREEPS, {
     filter: function(creep) {
       return creep.memory.role == 'extractor'
     }
@@ -413,12 +412,12 @@ function carriersUnion(room) {
     var creep = Game.creeps[creeps_list[bug].name]
     creep.memory.role = 'hauler'
   }
-  if (creeps_list.length < needed_carriers) {
-    console.log('We have a ', needed_carriers - creeps_list.length,
+  if (creeps_list.length < needed_haulers) {
+    console.log('We have a ', needed_haulers - creeps_list.length,
           'hauler deficit!')
   }
 
-  if (creeps_list.length > needed_carriers) {
+  if (creeps_list.length > needed_haulers) {
     console.log('We have a hauler Surplus!')
   }
 }
