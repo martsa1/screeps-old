@@ -13,11 +13,13 @@ function hauler(creep, room) {
 
   if (creep.memory.state === 'refill') {
     if (!creep.memory.extractorTarget) {
-      console.log(creep.name, 'I don\'t have a hauler to work with, looking for one!')
+      console.log(creep.name,
+                  'I don\'t have a hauler to work with, looking for one!')
       get_extractor_buddy(creep, room)
     }
     else {
-      console.log(creep.name, 'collecting energy from', JSON.stringify(creep.memory.extractorTarget))
+      console.log(creep.name, 'collecting energy from',
+                  creep.memory.extractorTarget)
       collect_energy_by_extractorTarget(creep, room)
     }
   }
@@ -94,7 +96,8 @@ function collect_energy_by_extractorTarget(creep) {
   if (!source) {
     console.log('I seem to have forgotten my destination as it doesn\'t seem '
       + 'to make sense anymore')
-    delete creep.memory.sourceAllocation
+    delete creep.memory.extractorTarget
+    return
   }
   // console.log('Source:', JSON.stringify(source))
   if(creep.pickup(source) == ERR_NOT_IN_RANGE) {

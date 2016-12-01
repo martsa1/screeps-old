@@ -1,7 +1,6 @@
 var creepManager = require('creep.manager')
 var towerManager = require('towerManager')
 
-
 module.exports.loop = function () {
 
     // Manage creeps & Towers room by room
