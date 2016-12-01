@@ -13,8 +13,9 @@ var manager = {
   manage: function(current_room) {
     undertaker()
     spawn_units(current_room)
-    workersUnion()
     minersUnion(current_room)
+    carriersUnion(current_room)
+    workersUnion(current_room)
   },
 
   run: function(current_room) {
@@ -161,6 +162,63 @@ function spawn_units(current_room) {
             unit_type.worker_1.u_body,
             undefined,
             unit_type.worker_1.u_mem)
+    }
+  }
+
+  if (population_carriers.length < needed_carriers
+    && population_regenerates.length == 0) {
+      // We have a deficit of workers, lets spawn some more!
+    if (max_build_energy >= unit_type.carrier_3.u_cost) {
+      if (_.filter(
+        Game.creeps, (creep) => (
+          creep.memory.role == Memory.socialStructure[0])
+        ).length  < Memory.population[Memory.socialStructure[0]]
+      ) {
+        // We shouldn't really get here, but in case all our units are
+        // dead or something...
+        console.log('Emergency Spawning lvl1 Worker')
+        newby = utils.get_spawn().createCreep(
+              unit_type.worker_1.u_body,
+              undefined,
+              unit_type.worker_1.u_mem)
+        console.log(newby)
+        return
+      }
+      console.log('Spawning lvl3 Carrier')
+      newby = utils.get_spawn().createCreep(
+            unit_type.carrier_3.u_body,
+            undefined,
+            unit_type.carrier_3.u_mem)
+      console.log(newby)
+    }
+    else if (max_build_energy >= unit_type.carrier_2.u_cost) {
+      if (_.filter(
+            Game.creeps, (creep) => (
+              creep.memory.role == Memory.socialStructure[0])
+            ).length < Memory.population[Memory.socialStructure[0]]
+          ) {
+            // We shouldn't really get here, but in case all our units are
+            // dead or something...
+        console.log('Emergency Spawning lvl1 Worker')
+        newby = utils.get_spawn().createCreep(
+              unit_type.worker_1.u_body,
+              undefined,
+              unit_type.worker_1.u_mem)
+        return
+      }
+      console.log('Spawning lvl2 Carrier')
+      newby = utils.get_spawn().createCreep(
+            unit_type.carrier_2.u_body,
+            undefined,
+            unit_type.carrier_2.u_mem)
+      console.log(newby)
+    }
+    else if (max_build_energy >= unit_type.carrier_1.u_cost) {
+      console.log('Spawning lvl1 Carrier')
+      newby = utils.get_spawn().createCreep(
+            unit_type.carrier_1.u_body,
+            undefined,
+            unit_type.carrier_1.u_mem)
     }
   }
 
@@ -325,6 +383,43 @@ function minersUnion(room) {
 
   if (creeps_list.length > needed_miners) {
     console.log('We have a miner Surplus!')
+  }
+}
+
+function carriersUnion(room) {
+  var needed_carriers = room.find(FIND_MY_CREEPS, {
+    filter: function(creep) {
+      return creep.memory.role == 'extractor'
+    }
+  }).length
+  // console.log('Needed Haulers:', needed_carriers)
+
+    // Create an ordered list of creeps (hashes are not numbered)
+  var creeps_list = room.find(FIND_MY_CREEPS, {
+    filter: function(creep) {
+      return (creep.memory.unit_type == 'carrier'
+              && creep.memory.role != 'regenerate'
+              && creep.memory.role != 'upgrade')
+    }
+  })
+
+  if (!creeps_list) {
+    console.log('No Creeps found matching carrier type!')
+    return
+  }
+
+  for (var bug in creeps_list) {
+    // console.log('Assigning', creeps_list[bug].name, 'A Hauler role!')
+    var creep = Game.creeps[creeps_list[bug].name]
+    creep.memory.role = 'hauler'
+  }
+  if (creeps_list.length < needed_carriers) {
+    console.log('We have a ', needed_carriers - creeps_list.length,
+          'hauler deficit!')
+  }
+
+  if (creeps_list.length > needed_carriers) {
+    console.log('We have a hauler Surplus!')
   }
 }
 
