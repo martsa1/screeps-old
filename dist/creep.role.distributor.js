@@ -9,21 +9,17 @@ function distributor(creep) {
   }
 
   if (!creep.memory.state) {
-    var source = utils.get_full_extractor(creep)
-    if (source) {
-      console.log(JSON.stringify(source))
+    var source = utils.find_nearest_energy_collection_point(creep)
+    // console.log(JSON.stringify(source));
+    if (source && (source.structureType !== STRUCTURE_SPAWN
+        && source.structureType !== STRUCTURE_EXTENSION)) {
       if (source.transfer(creep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
         creep.moveTo(source)
       }
     }
-    else {
-      source = utils.find_nearest_energy_collection_point(creep)
-      if (source && (source.structureType !== STRUCTURE_SPAWN
-          || source.structureType !== STRUCTURE_EXTENSION)) {
-        if (source.transfer(creep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(source)
-        }
-      }
+    else
+    {
+      utils.go_relax(creep)
     }
   }
 
