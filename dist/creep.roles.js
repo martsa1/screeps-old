@@ -1,18 +1,18 @@
-var priority = [
+var worker_priority = [
   'builder',
-  'hauler',
-  'distributor',
   'upgrader',
-  'defender',
   'harvester'
+]
+var carrier_priority = [
+  'hauler',
+  'distributor'
 ]
 
 if (!Memory.socialStructure) {
   Memory['socialStructure'] = {
-    workers: priority
+    workers: worker_priority,
+    carriers: carrier_priority
   }
-} else if (!Memory.socialStructure.workers){
-  Memory.socialStructure['workers'] = priority
 }
 
 if (!Memory.population) {
