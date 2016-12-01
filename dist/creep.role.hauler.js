@@ -64,8 +64,21 @@ function get_extractor_buddy(creep, room) {
   var haulers = room.find(FIND_MY_CREEPS, (extractor) => (
     extractor.memory.role == 'hauler'
   ))
-  creep.memory.extractorTarget = room.find(FIND_DROPPED_ENERGY)
-    .map(({ id }) => id)
+
+  // var sources = room.find(FIND_DROPPED_ENERGY,  {
+  //   filter: function(energy) {
+  //     return energy.amount >= creep.carryCapacity * 0.5
+  //   }
+  // })
+  var sources = room.find(FIND_DROPPED_ENERGY)
+  if (sources.length > 0){
+    sources = sources.concat(room.find(FIND_STRUCTURES,  {
+      filter: function(structure) {
+        return structure.structureType == STRUCTURE_CONTAINER
+      }
+    }))
+  }
+  sources.map(({ id }) => id)
     .reduce((former, next) => {
       console.log(former, next);
       var alreadyAllocated = false
@@ -100,8 +113,15 @@ function collect_energy_by_extractorTarget(creep) {
     return
   }
   // console.log('Source:', JSON.stringify(source))
-  if(creep.pickup(source) == ERR_NOT_IN_RANGE) {
-    creep.moveTo(source)
+  if (source.resourceType == RESOURCE_ENERGY){
+    if(creep.pickup(source) == ERR_NOT_IN_RANGE) {
+      creep.moveTo(source)
+    }
+  }
+  else if (source.structureType == STRUCTURE_CONTAINER) {
+    if(creep.withdraw(source) == ERR_NOT_IN_RANGE) {
+      creep.moveTo(source)
+    }
   }
 }
 

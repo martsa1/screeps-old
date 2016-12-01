@@ -18,12 +18,12 @@ if (!Memory.socialStructure) {
 if (!Memory.population) {
   Memory['population'] = {
     extractor: 2,
-    builder: 2,
+    builder: 1,
     defender: 0,
     distributor: 0,
     harvester: 0,
-    hauler: 3,
-    upgrader: 2,
+    hauler: 2,
+    upgrader: 0,
   }
 }
 

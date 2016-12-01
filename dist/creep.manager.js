@@ -28,7 +28,7 @@ var manager = {
           unit_roles[creep.memory.role](creep, current_room)
         } catch (err) {
           console.log(creep.name, 'caught amnesia, former role:',
-                      creep.memory.role, ', unsetting role:', err)
+                      creep.memory.role, ', unsetting role:', err.stack)
           delete creep.memory['role']
         }
       }
