@@ -27,6 +27,7 @@ function hauler(creep, room) {
   }
 
   if (creep.memory.state === 'transport'){
+    delete creep.memory.targetID
     target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: (structure) => {
         return (
@@ -79,15 +80,19 @@ function get_extractor_buddy(creep, room) {
       return structure.structureType == STRUCTURE_CONTAINER
     }
   }))
+  // console.log(JSON.stringify(sources));
   if (sources.length > 0){
     sources = sources.map(({ id }) => id)
       .reduce((former, next) => {
-        console.log(former, next);
+        // console.log(former, next);
         var alreadyAllocated = false
         for (let name in haulers) {
           let otherCreep = haulers[name]
-          console.log(otherCreep.name, ', memory:',
-            JSON.stringify(otherCreep.memory))
+          if (otherCreep.name === creep.name) {
+            continue
+          }
+          // console.log(otherCreep.name, ', memory:',
+          //   JSON.stringify(otherCreep.memory))
           if (otherCreep.memory.targetID
               && otherCreep.memory.targetID === former) {
             alreadyAllocated = true
@@ -124,16 +129,18 @@ function collect_energy_by_targetID(creep) {
     delete creep.memory.targetID
     return
   }
-  // console.log('Source:', JSON.stringify(source))
   if (source.resourceType == RESOURCE_ENERGY){
     if(creep.pickup(source) == ERR_NOT_IN_RANGE) {
       creep.moveTo(source)
     }
   }
   else if (source.structureType == STRUCTURE_CONTAINER) {
-    if(creep.withdraw(source) == ERR_NOT_IN_RANGE) {
+    if(creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
       creep.moveTo(source)
     }
+  }
+  else {
+    console.log('Something weird Happened!')
   }
 }
 
