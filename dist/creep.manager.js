@@ -16,21 +16,22 @@ var manager = {
     minersUnion(current_room)
     carriersUnion(current_room)
     workersUnion(current_room)
-  },
+    runCreeps(current_room)
+  }
+}
 
-  run: function(current_room) {
-    for(var name in Game.creeps) {
-      // Run our creeps behaviour
-      var creep = Game.creeps[name]
-      if (creep.memory.role) {
-        try {
-          // console.log(creep.name, ', Role:', creep.memory.role)
-          unit_roles[creep.memory.role](creep, current_room)
-        } catch (err) {
-          console.log(creep.name, 'caught amnesia, former role:',
-                      creep.memory.role, ', unsetting role:', err.stack)
-          delete creep.memory['role']
-        }
+function runCreeps(current_room) {
+  for(var name in Game.creeps) {
+    // Run our creeps behaviour
+    var creep = Game.creeps[name]
+    if (creep.memory.role) {
+      try {
+        // console.log(creep.name, ', Role:', creep.memory.role)
+        unit_roles[creep.memory.role](creep, current_room)
+      } catch (err) {
+        console.log(creep.name, 'caught amnesia, former role:',
+                    creep.memory.role, ', unsetting role:', err.stack)
+        delete creep.memory['role']
       }
     }
   }
@@ -101,7 +102,6 @@ function spawn_units(current_room) {
   var population_unknown = _.filter(Game.creeps, (creep) =>
     !creep.memory.unit_type
   )
-
 
   // console.log('Needed Workers:', needed_workers, 'Worker pop:',
   //             population_workers.length)
