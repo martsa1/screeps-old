@@ -31,7 +31,7 @@ function runCreeps(current_room) {
       } catch (err) {
         console.log(creep.name, 'caught amnesia, former role:',
                     creep.memory.role, ', unsetting role:', err.stack)
-        delete creep.memory['role']
+        delete creep.memory
       }
     }
   }
@@ -49,6 +49,8 @@ function undertaker() {
         console.log(creep.name, 'is getting old and is finally '
                       + 'entitled to some regeneration!')
         creep.memory.role = 'regenerate'
+        delete creep.memory.state
+        delete creep.memory.allocation
       }
     }
   }
