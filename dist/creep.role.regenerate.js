@@ -11,8 +11,8 @@ function regenerate(creep) {
       utils.go_relax(creep)
     }
   } else {
-        // feeling spritely again!
-    delete creep.memory.role
+    // feeling spritely again!
+    delete creep.memory
   }
 }
 
