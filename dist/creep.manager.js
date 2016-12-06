@@ -13,9 +13,9 @@ var manager = {
   manage: function(current_room) {
     undertaker()
     spawn_units(current_room)
-    minersUnion(current_room)
-    carriersUnion(current_room)
-    workersUnion(current_room)
+    // minersUnion(current_room)
+    // carriersUnion(current_room)
+    // workersUnion(current_room)
     runCreeps(current_room)
   }
 }
@@ -296,129 +296,6 @@ function spawn_units(current_room) {
         worst_creep.memory.role = 'upgrade'
       }
     }
-  }
-}
-
-function workersUnion() {
-
-  // Create a correctly padded list of roles to provide to creeps
-  var creeps_assignments = []
-  for (var unit_role in Memory.socialStructure.workers) {
-    for (let count = 0;
-         count < Memory.population[Memory.socialStructure.workers[unit_role]];
-         count ++) {
-      creeps_assignments.push(Memory.socialStructure.workers[unit_role])
-    }
-  }
-
-    // Create an ordered list of creeps (hashes are not numbered)
-  var creeps_list = _.filter(
-      Game.creeps, (creep) => (
-        creep.memory.unit_type == 'worker'
-        && creep.memory.role != 'regenerate'
-        && creep.memory.role != 'upgrade'
-      )
-    )
-  creeps_list = _.sortBy(
-    creeps_list,
-    [
-      function(creep) {
-        return creep.memory.lvl
-      }
-    ]
-    )
-
-  for (var count in creeps_assignments) {
-    try {
-      if (creeps_list.length > 0) {
-        var creep = Game.creeps[creeps_list.shift().name]
-        creep.memory.role = creeps_assignments[count]
-      } else {
-        break
-      }
-    } catch (err) {
-      console.log(err)
-    }
-  }
-  if (creeps_assignments.length- 1 - count != 0) {
-    console.log('We have a ', creeps_assignments.length- 1 - count,
-          'worker deficit!')
-  }
-
-  if (creeps_list.length > 0) {
-    console.log('We have a worker Surplus!')
-    for (let count = 0; count < creeps_list.length; count ++) {
-      creep = Game.creeps[creeps_list.shift().name]
-      console.log(creep.name, 'is heading for retirement!')
-      creep.memory['role'] = 'recycle'
-    }
-  }
-}
-
-function minersUnion(room) {
-  var needed_miners = room.find(FIND_SOURCES).length
-
-    // Create an ordered list of creeps (hashes are not numbered)
-  var creeps_list = _.filter(
-      Game.creeps, (creep) => (
-        creep.memory.unit_type == 'miner'
-        && creep.memory.role != 'regenerate'
-        && creep.memory.role != 'upgrade'
-      )
-    )
-
-  if (!creeps_list) {
-    return
-  }
-
-  for (var bug in creeps_list) {
-    var creep = Game.creeps[creeps_list[bug].name]
-    creep.memory.role = 'extractor'
-  }
-  if (creeps_list.length < needed_miners) {
-    console.log('We have a ', needed_miners - creeps_list.length,
-          'miner deficit!')
-  }
-
-  if (creeps_list.length > needed_miners) {
-    console.log('We have a miner Surplus!')
-  }
-}
-
-function carriersUnion(room) {
-  var needed_haulers = room.find(FIND_MY_CREEPS, {
-    filter: function(creep) {
-      return creep.memory.role == 'extractor'
-    }
-  }).length
-  // console.log('Needed Haulers:', needed_carriers)
-
-    // Create an ordered list of creeps (hashes are not numbered)
-  var creeps_list = room.find(FIND_MY_CREEPS, {
-    filter: function(creep) {
-      return (creep.memory.unit_type == 'carrier'
-              && creep.memory.role != 'regenerate'
-              && creep.memory.role != 'upgrade')
-    }
-  })
-
-  if (!creeps_list) {
-    console.log('No Creeps found matching carrier type!')
-    return
-  }
-
-  for (var bug in creeps_list) {
-    // console.log('Assigning', creeps_list[bug].name, 'A Hauler role!')
-    var creep = Game.creeps[creeps_list[bug].name]
-    creep.memory.role = 'hauler'
-  }
-  if (creeps_list.length < needed_haulers) {
-    console.log('We have a ', needed_haulers - creeps_list.length,
-          'hauler deficit!')
-  }
-
-  if (creeps_list.length > needed_haulers) {
-    console.log('We have a hauler Surplus!')
   }
 }
 

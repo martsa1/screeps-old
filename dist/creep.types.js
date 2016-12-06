@@ -204,23 +204,23 @@ var unit_types = {
       MOVE
     ],
     u_mem:{'unit_type': 'defender', 'lvl': '1'}
-  },
-
-  extractor_1: {
-    u_body: [
-      MOVE,
-      WORK,
-      WORK,
-      WORK,
-      WORK,
-      WORK,
-      WORK,
-      WORK,
-      WORK
-    ],
-    u_mem:{'unit_type': 'extractor', 'lvl': '1'},
-    u_cost: 50+(100*8)
   }
+
+  // extractor_1: {
+  //   u_body: [
+  //     MOVE,
+  //     WORK,
+  //     WORK,
+  //     WORK,
+  //     WORK,
+  //     WORK,
+  //     WORK,
+  //     WORK,
+  //     WORK
+  //   ],
+  //   u_mem:{'unit_type': 'extractor', 'lvl': '1'},
+  //   u_cost: 50+(100*8)
+  // }
 }
 
 module.exports = unit_types

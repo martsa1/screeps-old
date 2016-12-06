@@ -5,7 +5,8 @@ var roomManager = require('room.manager')
 Room.prototype.creepManager = creepManager.manage
 Room.prototype.towerManager = towerManager.manage
 
-Room.prototype.roomManage = roomManager
+Room.prototype.jobsList = roomManager.createJobsList
+Room.prototype.workDispatch = roomManager.workDispatch
 
 module.exports.loop = function () {
 
@@ -14,6 +15,7 @@ module.exports.loop = function () {
     var current_room = Game.rooms[room]
     current_room.creepManager(current_room)
     current_room.towerManager(current_room)
-    current_room.roomManage()
+    current_room.jobsList()
+    current_room.workDispatch()
   }
 }
