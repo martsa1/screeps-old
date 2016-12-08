@@ -27,7 +27,7 @@ var roomManager = {
       type: 'collect',
       role: 'hauler',
       amount: energy.amount,
-      priority: 'high',
+      priority: 0,
       prefType: 'carrier'
     }))
     jobsList = jobsList.concat(droppedEnergy)
@@ -47,17 +47,35 @@ var roomManager = {
       type: 'collect',
       role: 'hauler',
       amount: _.sum(mineContainer.store),
-      priority: 'mid',
+      priority: 1,
       prefType: 'carrier'
     }))
     jobsList = jobsList.concat(mineContainers)
+
+    let job = {
+      id: room.controller.id,
+      type: 'upgrade',
+      role: 'upgrader',
+      prefType: 'worker',
+      priority: 0
+    }
+    if (room.controller.level < 2) {
+      // We should focus on upgrading the room, not building stuff!
+      job.level = 2
+      jobsList.push(job, job, job, job, job)
+    }
+    else {
+      job.level = room.controller.level + 1
+      jobsList.push(job) //Just allocate a single upgrader for now.
+    }
 
     let builds = room.find(FIND_MY_CONSTRUCTION_SITES)
     .map((site) => ({
       id: site.id,
       type: 'build',
       role: 'builder',
-      prefType: 'worker'
+      prefType: 'worker',
+      priority: site.structureType === STRUCTURE_EXTENSION ? 0 : 1
     })) // We only need to keep the site IDs (for now)
     jobsList = jobsList.concat(builds)
 
@@ -73,86 +91,77 @@ var roomManager = {
       id: structure.id,
       type: 'repair',
       role: 'builder',
-      prefType: 'worker'
+      prefType: 'worker',
+      priority: (structure.structureType !== STRUCTURE_WALL
+                 && structure.structureType !== STRUCTURE_RAMPART) ? 0 : 1
     }))
     jobsList = jobsList.concat(damagedStructures)
 
-    // let storageContainers = room.find(FIND_MY_STRUCTURES, {
-    //   filter: function(structure) {
-    //     if (structure.structureType === STRUCTURE_CONTAINER
-    //         && _.sum(structure.store) < structure.storeCapacity) {
-    //       let alreadyFound = false
-    //       for (let i = 0; i < mineContainers.length; i ++) {
-    //         if (mineContainers[i].id === structure.id) {
-    //           alreadyFound = true
-    //         }
-    //       }
-    //       if (!alreadyFound) return true
-    //     }
-    //   }
-    // })
-    // .map((storageContainer) => ({
-    //   id: storageContainer.id,
-    //   type: 'refill',
-    //   role: 'hauler',
-    //   amount: _.sum(storageContainer.store),
-    //   priority: 'low',
-    //   prefType: 'carrier'
-    // }))
-    // jobsList = jobsList.concat(storageContainers)
+    let storageContainers = room.find(FIND_MY_STRUCTURES, {
+      filter: function(structure) {
+        if (structure.structureType === STRUCTURE_CONTAINER
+            && _.sum(structure.store) < structure.storeCapacity) {
+          let alreadyFound = false
+          for (let i = 0; i < mineContainers.length; i ++) {
+            if (mineContainers[i].id === structure.id) {
+              alreadyFound = true
+            }
+          }
+          if (!alreadyFound) return true
+        }
+      }
+    })
+    .map((storageContainer) => ({
+      id: storageContainer.id,
+      type: 'refill',
+      role: 'hauler',
+      amount: _.sum(storageContainer.store),
+      priority: 2,
+      prefType: 'carrier'
+    }))
+    jobsList = jobsList.concat(storageContainers)
 
-    // let extensions = room.find(FIND_MY_STRUCTURES, {
-    //   filter: (structure) => {
-    //     return ((structure.structureType === 'extension'
-    //              || structure.structureType === 'spawn')
-    //             && structure.energy < structure.energyCapacity)
-    //   }
-    // })
-    // .map((extension) => ({
-    //   id: extension.id,
-    //   type: 'refill',
-    //   role: 'hauler',
-    //   priority: 'high',
-    //   prefType: 'carrier'
-    // }))
-    // jobsList = jobsList.concat(extensions)
-    //
-    //
-    // let storage = room.storage
-    // if (storage) {
-    //   storage = {
-    //     id: storage.id,
-    //     type: 'refill',
-    //     role: 'hauler',
-    //     priority: 'mid',
-    //     prefType: 'carrier'
-    //   }
-    //   jobsList = jobsList.push(storage)
-    // }
+    let extensions = room.find(FIND_MY_STRUCTURES, {
+      filter: (structure) => {
+        return ((structure.structureType === 'extension'
+                 || structure.structureType === 'spawn')
+                && structure.energy < structure.energyCapacity)
+      }
+    })
+    .map((extension) => ({
+      id: extension.id,
+      type: 'refill',
+      role: 'hauler',
+      priority: 0,
+      prefType: 'carrier'
+    }))
+    jobsList = jobsList.concat(extensions)
+
+
+    let storage = room.storage
+    if (storage) {
+      storage = {
+        id: storage.id,
+        type: 'refill',
+        role: 'hauler',
+        priority: 1,
+        prefType: 'carrier'
+      }
+      jobsList = jobsList.push(storage)
+    }
 
     // Translate the array of jobs we have into a hash to make it easy to
     // reference stuff later!
     let result = jobsList.reduce((hash, element) => {
-      hash[element.id] = {
-        id: element.id,
-        type: element.type ? element.type: undefined,
-        role: element.role ? element.role: undefined,
-        priority: element.priority ? element.priority : undefined,
-        prefType: element.prefType ? element.prefType : undefined,
+      hash[element.id] = {}
+      for (let key in element) {
+        hash[element.id][key] = element[key]
       }
       return hash
     }, {})
 
-    // Remove any existing allocations from the list
-    for (let job in result) {
-      if (room.memory.jobsList[job] && room.memory.jobsList[job].allocation) {
-        // console.log('Found existing job allocation:',
-        //             JSON.stringify(room.memory.jobsList[job]));
-        delete result[job]
-      }
-    }
-
-    jobsList = result
+    jobsList = pruneExistingJobs(result)
+    room.memory['jobsList'] = jobsList
   },
 
   workDispatch: function() {
@@ -200,26 +209,43 @@ function allocateJobs(unitsList) {
       return (job.prefType === unit && !job.allocation)
     })
     switch (unit) {
-      case 'miner' :
+      case 'miner' :{
         pushAssignmentToWorker(relevantJobs, 'miner')
         break
+      }
 
-      case 'carrier':
-        // console.log(JSON.stringify(relevantJobs));
+      case 'carrier': {
+        relevantJobs.sort((former, latter) => {
+          if (former.priority < latter.priority) {
+            return -1
+          }
+          else if (former.priority > latter.priority) {
+            return +1
+          }
+          else {
+            return 0
+          }
+        })
         pushAssignmentToWorker(relevantJobs, 'carrier')
         break
+      }
 
-      case 'worker':
-        if (room.controller.level < 2) {
-          // We should focus on upgrading the room, not building stuff!
-          relevantJobs.forEach((job) => {
-            job.id = room.controller.id
-            job.type = 'upgrade'
-            job.role = 'upgrader'
-          })
-        }
+      case 'worker': {
+        relevantJobs.sort((former, latter) => {
+          if (former.priority < latter.priority) {
+            return -1
+          }
+          else if (former.priority > latter.priority) {
+            return +1
+          }
+          else {
+            return 0
+          }
+        })
+        // console.log(JSON.stringify(relevantJobs));
         pushAssignmentToWorker(relevantJobs, 'worker')
         break
+      }
     }
     // console.log(JSON.stringify(relevantJobs));
     // console.log(JSON.stringify(unitsList));
@@ -238,14 +264,35 @@ function pushAssignmentToWorker(relevantJobs, unitType) {
     //             JSON.stringify(relevantJobs[job]));
     let creep = unit.shift()
     if (creep) {
-      creep.memory.allocation = relevantJobs[job].id
+      creep.memory.allocation = relevantJobs[job]
       creep.memory.role = relevantJobs[job].role
       // console.log(JSON.stringify(relevantJobs[job]))
-      if (relevantJobs[job].type !== 'upgrade'){
-        jobsList[relevantJobs[job].id]['allocation'] = creep.id
+    }
+  }
+}
+
+function pruneExistingJobs(jobsList) {
+  // Remove any existing allocations from the list
+  let creepAllocations = room.find(FIND_MY_CREEPS, {
+    filter: (creep) => {
+      return creep.memory.allocation
+    }
+  })
+  .map((creep) => {
+    return creep.memory.allocation.id
+  })
+
+  for (let job in jobsList) {
+    for (let allocation in creepAllocations) {
+      if (creepAllocations[allocation] === jobsList[job].id) {
+        // console.log('Found existing job allocation:',
+        //             JSON.stringify(jobsList[job]))
+        delete jobsList[job]
+        break
       }
     }
   }
+  return jobsList
 }
 
 module.exports = roomManager

@@ -31,7 +31,9 @@ function runCreeps(current_room) {
       } catch (err) {
         console.log(creep.name, 'caught amnesia, former role:',
                     creep.memory.role, ', unsetting role:', err.stack)
-        delete creep.memory
+        delete creep.memory.state
+        delete creep.memory.role
+        delete creep.memory.allocation
       }
     }
   }
@@ -48,9 +50,10 @@ function undertaker() {
       if (creep.ticksToLive < 100 && creep.memory.role != 'regenerate') {
         console.log(creep.name, 'is getting old and is finally '
                       + 'entitled to some regeneration!')
-        creep.memory.role = 'regenerate'
         delete creep.memory.state
         delete creep.memory.allocation
+
+        creep.memory.role = 'regenerate'
       }
     }
   }
