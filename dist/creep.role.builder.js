@@ -15,50 +15,19 @@ function builder(creep) {
   var target = {}
 
   if(creep.memory.state === 'build' && creep.memory.allocation) {
-    target = Game.getObjectById(creep.memory.allocation)
+    target = Game.getObjectById(creep.memory.allocation.id)
     if(target) {
       if(creep.build(target) == ERR_NOT_IN_RANGE) {
         creep.moveTo(target)
       }
     }
     else {
-      console.log(creep.name, 'Don\'t appear to have an allocation.');
+      console.log(creep.name, 'Doesn\'t appear to have an allocation.');
       delete creep.memory.allocation
+      delete creep.memory.role
+      delete creep.memory.state
       utils.go_relax(creep)
     }
-    // target = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES)
-    // else {
-    //   target = creep.pos.findClosestByRange(FIND_STRUCTURES, {
-    //     filter: (structure) => (
-    //       structure.hits < structure.hitsMax * 0.95 &&
-    //       structure.structureType != STRUCTURE_WALL &&
-    //       structure.structureType != STRUCTURE_RAMPART
-    //     )
-    //   })
-    //   if(target) {
-    //     if(creep.repair(target) == ERR_NOT_IN_RANGE) {
-    //       creep.moveTo(target)
-    //     }
-    //   }
-    //   else {
-    //     target = creep.pos.findClosestByRange(FIND_STRUCTURES,
-    //       {
-    //         filter: (structure) => (
-    //           structure.hits <= Memory.defense.wall_health &&
-    //           (structure.structureType == STRUCTURE_WALL ||
-    //           structure.structureType == STRUCTURE_RAMPART)
-    //         )
-    //       }
-    //     )
-    //     if(target) {
-    //       if(creep.repair(target) == ERR_NOT_IN_RANGE) {
-    //         creep.moveTo(target)
-    //       }
-    //     } else {
-    //       utils.go_relax(creep)
-    //     }
-    //   }
-    // }
   }
   else {
     utils.collect_nearest_energy(creep)

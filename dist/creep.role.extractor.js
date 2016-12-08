@@ -19,7 +19,7 @@ function extractor(creep) {
 }
 
 function harvest_source_by_ID(creep) {
-  var source = Game.getObjectById(creep.memory.allocation);
+  var source = Game.getObjectById(creep.memory.allocation.id);
   if (!source) {
     console.log('I seem to have forgotten my destination as it doesn\'t seem '
       + 'to make sense anymore')

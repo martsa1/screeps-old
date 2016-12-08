@@ -121,7 +121,7 @@ function hauler(creep) {
 // }
 
 function collect_energy_by_allocation(creep) {
-  var source = Game.getObjectById(creep.memory.allocation)
+  var source = Game.getObjectById(creep.memory.allocation.id)
   if (!source) {
     console.log('I seem to have forgotten my destination as it doesn\'t seem '
       + 'to make sense anymore')
