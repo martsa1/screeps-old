@@ -12,7 +12,7 @@ function regenerate(creep) {
     }
   } else {
     // feeling spritely again!
-    delete creep.memory
+    delete creep.memory.role
   }
 }
 
