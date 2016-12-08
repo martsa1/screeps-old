@@ -226,6 +226,9 @@ function allocateJobs(unitsList) {
             return 0
           }
         })
+        relevantJobs = _.filter(relevantJobs, (job) => {
+          return job.type !== 'refill'
+        })
         pushAssignmentToWorker(relevantJobs, 'carrier')
         break
       }
