@@ -17,7 +17,12 @@ function builder(creep) {
   if(creep.memory.state === 'build' && creep.memory.allocation) {
     target = Game.getObjectById(creep.memory.allocation.id)
     if(target) {
-      if(creep.build(target) == ERR_NOT_IN_RANGE) {
+      if (creep.memory.allocation.type === 'repair') {
+        if (creep.repair(target) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(target)
+        }
+      }
+      else if(creep.build(target) == ERR_NOT_IN_RANGE) {
         creep.moveTo(target)
       }
     }
