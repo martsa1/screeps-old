@@ -32,11 +32,15 @@ var roomManager = {
     }))
     jobsList = jobsList.concat(droppedEnergy)
 
-    let mineContainers = room.find(FIND_MY_STRUCTURES, {
+    // Grab a set of source Objects to map against...
+    let sourceObjs = sources.map((source) => {
+      return Game.getObjectById(source.id).pos
+    })
+    let mineContainers = room.find(FIND_STRUCTURES, {
       filter: function(structure) {
         if (structure.structureType == STRUCTURE_CONTAINER) {
-          let targets = structure.pos.findClosestInRange(sources, 2)
-          if (targets) {
+          let targets = structure.pos.findInRange(sourceObjs, 2)
+          if (targets.length > 0) {
             return true
           }
         }
@@ -85,7 +89,7 @@ var roomManager = {
       return object.structure
     })
     .filter((structure) => {
-      structure.hits< structure.hitsMax
+      return structure.hits < structure.hitsMax
     })
     .map((structure) => ({
       id: structure.id,
@@ -97,7 +101,7 @@ var roomManager = {
     }))
     jobsList = jobsList.concat(damagedStructures)
 
-    let storageContainers = room.find(FIND_MY_STRUCTURES, {
+    let storageContainers = room.find(FIND_STRUCTURES, {
       filter: function(structure) {
         if (structure.structureType === STRUCTURE_CONTAINER
             && _.sum(structure.store) < structure.storeCapacity) {
@@ -105,9 +109,10 @@ var roomManager = {
           for (let i = 0; i < mineContainers.length; i ++) {
             if (mineContainers[i].id === structure.id) {
               alreadyFound = true
+              break
             }
           }
-          if (!alreadyFound) return true
+          return !alreadyFound
         }
       }
     })
@@ -160,6 +165,7 @@ var roomManager = {
       return hash
     }, {})
 
+    // console.log(JSON.stringify(result))
     jobsList = pruneExistingJobs(result)
     room.memory['jobsList'] = jobsList
   },
@@ -179,10 +185,7 @@ var roomManager = {
       })
       unitsList[unitType] = workers_list
     }
-
     allocateJobs(unitsList)
-
-
   }
 }
 
