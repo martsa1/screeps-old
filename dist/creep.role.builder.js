@@ -21,6 +21,13 @@ function builder(creep) {
         if (creep.repair(target) == ERR_NOT_IN_RANGE) {
           creep.moveTo(target)
         }
+        if (target.hits === target.hitsMax) {
+          console.log('Repair job complete');
+          delete creep.memory.allocation
+          delete creep.memory.role
+          delete creep.memory.state
+          utils.go_relax(creep)
+        }
       }
       else if(creep.build(target) == ERR_NOT_IN_RANGE) {
         creep.moveTo(target)

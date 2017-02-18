@@ -180,7 +180,8 @@ var roomManager = {
         filter: (creep) => {
           return (creep.memory.unit_type == unitType
           && creep.memory.role != 'regenerate'
-          && creep.memory.role != 'upgrade')
+          && creep.memory.role != 'upgrade'
+          && creep.ticksToLive > 100)
         }
       })
       unitsList[unitType] = workers_list

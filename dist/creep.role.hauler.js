@@ -13,7 +13,7 @@ function hauler(creep) {
     creep.memory.state = 'transport'
   }
 
-  if (creep.memory.state === 'refill') {
+  if (creep.carry.energy < creep.carryCapacity) {
     if (!creep.memory.allocation) {
       console.log(creep.name,
                   'I don\'t have a source to work with!')
@@ -68,6 +68,8 @@ function collect_energy_by_allocation(creep) {
     console.log('I seem to have forgotten my destination as it doesn\'t seem '
       + 'to make sense anymore')
     delete creep.memory.allocation
+    delete creep.memory.state
+    delete creep.memory.role
     return
   }
   if (source.resourceType == RESOURCE_ENERGY){

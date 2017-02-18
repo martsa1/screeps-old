@@ -48,8 +48,8 @@ function undertaker() {
     var creep = Game.creeps[name]
     if (creep) {
       if (creep.ticksToLive < 100 && creep.memory.role != 'regenerate') {
-        console.log(creep.name, 'is getting old and is finally '
-                      + 'entitled to some regeneration!')
+        // console.log(creep.name, 'is getting old and is finally '
+        //               + 'entitled to some regeneration!')
         delete creep.memory.state
         delete creep.memory.allocation
 
