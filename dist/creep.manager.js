@@ -13,27 +13,22 @@ var manager = {
   manage: function(current_room) {
     undertaker()
     spawn_units(current_room)
-    // minersUnion(current_room)
-    // carriersUnion(current_room)
-    // workersUnion(current_room)
-    runCreeps(current_room)
-  }
-}
+    workersUnion()
+  },
 
-function runCreeps(current_room) {
-  for(var name in Game.creeps) {
-    // Run our creeps behaviour
-    var creep = Game.creeps[name]
-    if (creep.memory.role) {
-      try {
-        // console.log(creep.name, ', Role:', creep.memory.role)
-        unit_roles[creep.memory.role](creep, current_room)
-      } catch (err) {
-        console.log(creep.name, 'caught amnesia, former role:',
-                    creep.memory.role, ', unsetting role:', err.stack)
-        delete creep.memory.state
-        delete creep.memory.role
-        delete creep.memory.allocation
+  run: function() {
+    for(var name in Game.creeps) {
+      // Run our creeps behaviour
+      var creep = Game.creeps[name]
+      if (creep.memory.role) {
+        try {
+          // console.log(creep.name, ', Role:', creep.memory.role)
+          unit_roles[creep.memory.role](creep)
+        } catch (err) {
+          console.log(creep.name, 'caught amnesia, former role:',
+                      creep.memory.role, ', unsetting role:', err)
+          delete creep.memory['role']
+        }
       }
     }
   }
@@ -48,11 +43,8 @@ function undertaker() {
     var creep = Game.creeps[name]
     if (creep) {
       if (creep.ticksToLive < 100 && creep.memory.role != 'regenerate') {
-        // console.log(creep.name, 'is getting old and is finally '
-        //               + 'entitled to some regeneration!')
-        delete creep.memory.state
-        delete creep.memory.allocation
-
+        console.log(creep.name, 'is getting old and is finally '
+                      + 'entitled to some regeneration!')
         creep.memory.role = 'regenerate'
       }
     }
@@ -67,29 +59,14 @@ function spawn_units(current_room) {
 
   var needed_workers = Memory.population.builder
       + Memory.population.harvester
-      + Memory.population.upgrader || 0
-  var needed_carriers = Memory.population.hauler
-      + Memory.population.distributor || 0
-  var needed_miners = current_room.find(FIND_SOURCES).length
+      + Memory.population.upgrader
+      + Memory.population.hauler
+      + Memory.population.extractor || 0
   var needed_fighters = Memory.population.defender || 0
 
   var population_workers = _.filter(
     Game.creeps, (creep) => (
       creep.memory.unit_type == 'worker'
-      && creep.memory.role != 'upgrade'
-    )
-  )
-
-  var population_carriers = _.filter(
-    Game.creeps, (creep) => (
-      creep.memory.unit_type == 'carrier'
-      && creep.memory.role != 'upgrade'
-    )
-  )
-
-  var population_miners = _.filter(
-    Game.creeps, (creep) => (
-      creep.memory.unit_type == 'miner'
       && creep.memory.role != 'upgrade'
     )
   )
@@ -107,6 +84,7 @@ function spawn_units(current_room) {
   var population_unknown = _.filter(Game.creeps, (creep) =>
     !creep.memory.unit_type
   )
+
 
   // console.log('Needed Workers:', needed_workers, 'Worker pop:',
   //             population_workers.length)
@@ -169,90 +147,6 @@ function spawn_units(current_room) {
     }
   }
 
-  if (population_carriers.length < needed_carriers
-    && population_regenerates.length == 0) {
-      // We have a deficit of workers, lets spawn some more!
-    if (max_build_energy >= unit_type.carrier_3.u_cost) {
-      if (_.filter(
-        Game.creeps, (creep) => (
-          creep.memory.role == Memory.socialStructure[0])
-        ).length  < Memory.population[Memory.socialStructure[0]]
-      ) {
-        // We shouldn't really get here, but in case all our units are
-        // dead or something...
-        console.log('Emergency Spawning lvl1 Worker')
-        newby = utils.get_spawn().createCreep(
-              unit_type.worker_1.u_body,
-              undefined,
-              unit_type.worker_1.u_mem)
-        console.log(newby)
-        return
-      }
-      console.log('Spawning lvl3 Carrier')
-      newby = utils.get_spawn().createCreep(
-            unit_type.carrier_3.u_body,
-            undefined,
-            unit_type.carrier_3.u_mem)
-      console.log(newby)
-    }
-    else if (max_build_energy >= unit_type.carrier_2.u_cost) {
-      if (_.filter(
-            Game.creeps, (creep) => (
-              creep.memory.role == Memory.socialStructure[0])
-            ).length < Memory.population[Memory.socialStructure[0]]
-          ) {
-            // We shouldn't really get here, but in case all our units are
-            // dead or something...
-        console.log('Emergency Spawning lvl1 Worker')
-        newby = utils.get_spawn().createCreep(
-              unit_type.worker_1.u_body,
-              undefined,
-              unit_type.worker_1.u_mem)
-        return
-      }
-      console.log('Spawning lvl2 Carrier')
-      newby = utils.get_spawn().createCreep(
-            unit_type.carrier_2.u_body,
-            undefined,
-            unit_type.carrier_2.u_mem)
-      console.log(newby)
-    }
-    else if (max_build_energy >= unit_type.carrier_1.u_cost) {
-      console.log('Spawning lvl1 Carrier')
-      newby = utils.get_spawn().createCreep(
-            unit_type.carrier_1.u_body,
-            undefined,
-            unit_type.carrier_1.u_mem)
-    }
-  }
-
-  if (population_miners.length < needed_miners
-    && population_regenerates.length == 0) {
-      // We have a deficit of workers, lets spawn some more!
-    if (max_build_energy >= unit_type.miner_3.u_cost) {
-      console.log('Spawning lvl3 Miner')
-      newby = utils.get_spawn().createCreep(
-            unit_type.miner_3.u_body,
-            undefined,
-            unit_type.miner_3.u_mem)
-      console.log(newby)
-    }
-    else if (max_build_energy >= unit_type.miner_2.u_cost) {
-      console.log('Spawning lvl2 Miner')
-      newby = utils.get_spawn().createCreep(
-            unit_type.miner_2.u_body,
-            undefined,
-            unit_type.miner_2.u_mem)
-    }
-    else if (max_build_energy >= unit_type.miner_1.u_cost) {
-      console.log('Spawning lvl1 Miner')
-      newby = utils.get_spawn().createCreep(
-            unit_type.miner_1.u_body,
-            undefined,
-            unit_type.miner_1.u_mem)
-    }
-  }
-
   if (population_fighters.length < needed_fighters) {
       // We have a deficit of fighters, lets spawn some more!
     newby = utils.get_spawn().createCreep(
@@ -300,6 +194,62 @@ function spawn_units(current_room) {
         console.log(worst_creep.name, 'is due for an upgrade!')
         worst_creep.memory.role = 'upgrade'
       }
+    }
+  }
+}
+
+function workersUnion() {
+
+    // Create a correctly padded list of roles to provide to creeps
+  var creeps_assignments = []
+  for (var unit_role in Memory.socialStructure) {
+    for (let count = 0;
+         count < Memory.population[Memory.socialStructure[unit_role]];
+         count ++) {
+      creeps_assignments.push(Memory.socialStructure[unit_role])
+    }
+  }
+
+    // Create an ordered list of creeps (hashes are not numbered)
+  var creeps_list = _.filter(
+      Game.creeps, (creep) => (
+        creep.memory.unit_type == 'worker'
+        && creep.memory.role != 'regenerate'
+        && creep.memory.role != 'upgrade'
+      )
+    )
+  creeps_list = _.sortBy(
+      creeps_list,
+    [
+      function(creep) {
+        return creep.memory.lvl
+      }
+    ]
+    )
+
+  for (var count in creeps_assignments) {
+    try {
+      if (creeps_list.length > 0) {
+        var creep = Game.creeps[creeps_list.shift().name]
+        creep.memory.role = creeps_assignments[count]
+      } else {
+        break
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  if (creeps_assignments.length- 1 - count != 0) {
+    console.log('We have a ', creeps_assignments.length- 1 - count,
+          'worker deficit!')
+  }
+
+  if (creeps_list.length > 0) {
+    console.log('We have a worker Surplus!')
+    for (let count = 0; count < creeps_list.length; count ++) {
+      creep = Game.creeps[creeps_list.shift().name]
+      console.log(creep.name, 'is heading for retirement!')
+      creep.memory['role'] = 'recycle'
     }
   }
 }

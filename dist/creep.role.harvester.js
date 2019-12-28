@@ -1,5 +1,13 @@
 var utils = require('utils')
 
+if (!Memory.population) {
+  Memory['population'] = {
+    harvester: 6,
+  }
+} else if (!Memory.population.harvester) {
+  Memory.population['harvester'] = 6
+}
+
 function harvester(creep) {
   if(creep.memory.state && creep.carry.energy == 0) {
     creep.memory.state = false

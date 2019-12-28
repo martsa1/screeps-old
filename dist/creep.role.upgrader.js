@@ -1,46 +1,26 @@
 var utils = require('utils')
 
+if (!Memory.population) {
+  Memory.population = {
+    upgrader: 2,
+  }
+} else if (!Memory.population.upgrader) {
+  Memory.population.upgrader = 2
+}
+
 function upgrader(creep) {
-  if (!creep.memory.state
-      || (creep.memory.state !== 'upgrade'
-          && creep.memory.state !== 'refill')) {
-    creep.memory.state = 'refill'
+
+  if(creep.memory.upgrading && creep.carry.energy == 0) {
+    creep.memory.upgrading = false
+  }
+  if(!creep.memory.upgrading && creep.carry.energy == creep.carryCapacity) {
+    creep.memory.upgrading = true
   }
 
-  if(creep.memory.state === 'upgrade' && creep.carry.energy == 0) {
-    creep.memory.state = 'refill'
-  }
-  if(creep.memory.state === 'refill'
-      && creep.carry.energy == creep.carryCapacity) {
-    creep.memory.state = 'upgrade'
-  }
-
-  if (!creep.memory.allocation) {
-    delete creep.memory.role
-    delete creep.memory.state
-  }
-
-  if(creep.memory.state === 'upgrade') {
-    let target = Game.getObjectById(creep.memory.allocation.id)
-    if (!target) {
-      delete creep.memory.allocation
-      delete creep.memory.state
-      delete creep.memory.role
-      return
+  if(creep.memory.upgrading) {
+    if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
+      creep.moveTo(creep.room.controller)
     }
-
-    if (creep.upgradeController(target) == ERR_NOT_IN_RANGE) {
-      creep.moveTo(target)
-    }
-
-    if (target.level === creep.memory.allocation.level) {
-      console.log('Upgrade Job completed');
-      delete creep.memory.allocation
-      delete creep.memory.state
-      delete creep.memory.role
-      return
-    }
-
   }
   else {
     utils.collect_nearest_energy(creep)

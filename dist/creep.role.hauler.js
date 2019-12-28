@@ -1,33 +1,41 @@
 var utils = require('utils')
 
+if (!Memory.population) {
+  Memory.population = {
+    hauler: 0,
+  }
+} else if (!Memory.population.hauler) {
+  Memory.population.hauler = 0
+}
+
 function hauler(creep) {
-  // console.log(JSON.stringify(creep.memory))
-  if (!creep.memory.state || creep.memory.state === '') {
-    creep.memory['state'] = 'refill'
+  if(creep.memory.state && creep.carry.energy == 0) {
+    creep.memory.state = false
   }
-  if(creep.memory.state === 'transport' && creep.carry.energy == 0) {
-    creep.memory.state = 'refill'
-  }
-  if(creep.memory.state === 'refill'
-     && creep.carry.energy == creep.carryCapacity) {
-    creep.memory.state = 'transport'
+  if(!creep.memory.state && creep.carry.energy == creep.carryCapacity) {
+    creep.memory.state = true
   }
 
-  if (creep.carry.energy < creep.carryCapacity) {
-    if (!creep.memory.allocation) {
-      console.log(creep.name,
-                  'I don\'t have a source to work with!')
-      delete creep.memory.role
-      delete creep.memory.state
-      return
+  if (!creep.memory.state) {
+    var source = utils.get_full_extractor(creep)
+    if (source) {
+      console.log(JSON.stringify(source))
+      if (source.transfer(creep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(source)
+      }
     }
     else {
-      collect_energy_by_allocation(creep)
+      source = utils.find_nearest_energy_collection_point(creep)
+      if (source && (source.structureType !== STRUCTURE_SPAWN
+          || source.structureType !== STRUCTURE_EXTENSION)) {
+        if (source.transfer(creep, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(source)
+        }
+      }
     }
   }
 
-  if (creep.memory.state === 'transport'){
-    delete creep.memory.allocation
+  if (creep.memory.state){
     target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: (structure) => {
         return (
@@ -56,36 +64,10 @@ function hauler(creep) {
         }
       }
       else {
-        utils.go_relax(creep)
+        creep.moveTo(Game.flags.Chillout)
       }
     }
   }
 }
-
-function collect_energy_by_allocation(creep) {
-  var source = Game.getObjectById(creep.memory.allocation.id)
-  if (!source) {
-    console.log('I seem to have forgotten my destination as it doesn\'t seem '
-      + 'to make sense anymore')
-    delete creep.memory.allocation
-    delete creep.memory.state
-    delete creep.memory.role
-    return
-  }
-  if (source.resourceType == RESOURCE_ENERGY){
-    if(creep.pickup(source) == ERR_NOT_IN_RANGE) {
-      creep.moveTo(source)
-    }
-  }
-  else if (source.structureType == STRUCTURE_CONTAINER) {
-    if(creep.withdraw(source, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-      creep.moveTo(source)
-    }
-  }
-  else {
-    console.log('Something weird Happened!')
-  }
-}
-
 
 module.exports = hauler

@@ -1,5 +1,13 @@
 var utils = require('utils')
 
+if (!Memory.population) {
+  Memory.population = {
+    defender: 0,
+  }
+} else if (!Memory.population.defender) {
+  Memory.population.defender = 0
+}
+
 function defender(creep) {
   var target = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS)
 
